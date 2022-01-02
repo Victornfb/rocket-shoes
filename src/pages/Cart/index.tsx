@@ -33,16 +33,24 @@ const Cart = (): JSX.Element => {
       }, 0)
     )
 
-  function handleProductIncrement(product: Product) {
-    //sla
+  async function handleProductIncrement(product: Product) {
+    const productToUpdateAmount = {
+      productId: product.id,
+      amount: product.amount + 1,
+    };
+    await updateProductAmount(productToUpdateAmount);
   }
 
-  function handleProductDecrement(product: Product) {
-    // TODO
+  async function handleProductDecrement(product: Product) {
+    const productToUpdateAmount = {
+      productId: product.id,
+      amount: product.amount - 1,
+    };
+    await updateProductAmount(productToUpdateAmount);
   }
 
   function handleRemoveProduct(productId: number) {
-    // TODO
+    removeProduct(productId);
   }
 
   return (
@@ -59,7 +67,7 @@ const Cart = (): JSX.Element => {
         </thead>
         <tbody>
           {cartFormatted.map(product => (
-            <tr key={product.id}>
+            <tr data-testid="product" key={product.id}>
               <td>
                 <img src={product.image} alt={product.title} />
               </td>
@@ -72,8 +80,8 @@ const Cart = (): JSX.Element => {
                   <button
                     type="button"
                     data-testid="decrement-product"
-                  // disabled={product.amount <= 1}
-                  // onClick={() => handleProductDecrement()}
+                    disabled={product.amount <= 1}
+                    onClick={() => handleProductDecrement(product)}
                   >
                     <MdRemoveCircleOutline size={20} />
                   </button>
@@ -81,7 +89,7 @@ const Cart = (): JSX.Element => {
                     type="text"
                     data-testid="product-amount"
                     readOnly
-                    value={2}
+                    value={product.amount}
                   />
                   <button
                     type="button"
@@ -99,7 +107,7 @@ const Cart = (): JSX.Element => {
                 <button
                   type="button"
                   data-testid="remove-product"
-                // onClick={() => handleRemoveProduct(product.id)}
+                  onClick={() => handleRemoveProduct(product.id)}
                 >
                   <MdDelete size={20} />
                 </button>
